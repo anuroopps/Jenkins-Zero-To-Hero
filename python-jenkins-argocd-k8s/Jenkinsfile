@@ -6,13 +6,9 @@ pipeline {
 stages{
     stage('checkout') {
         steps {
-           checkout scmGit(
-  branches: [[name: '*/main']],
-  extensions: [],
-  userRemoteConfigs: [[url: 'https://github.com/anuroopps/Jenkins-Zero-To-Hero']]
-  )
-    }
-}
+            checkout scm
+     }
+    }     
    stage ('docker image build') {
        steps {
        sh '''
