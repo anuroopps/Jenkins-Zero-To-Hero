@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+     environment {
+        IMAGE_TAG = "${BUILD_NUMBER}"
+    }
+stages{
+    stage('checkout') {
+        steps {
+           checkout scmGit(
+  branches: [[name: '*/main']],
+  extensions: [],
+  userRemoteConfigs: [[url: 'https://github.com/anuroopps/Jenkins-Zero-To-Hero']]
+  )
+    }
+}
+   stage ('docker image build') {
+       steps {
+       sh '''
+       echo 'Building docker image with tag $BUILD_NUMBER'
+       docker build -t python-argocd:$BUILD_NUMBER -f python-jenkins-argocd-k8s/Dockerfile .
+       docker tag python-argocd:$BUILD_NUMBER anuroopps/python-argocd-cicd:$BUILD_NUMBER
+       '''
+       }
+   }
+    stage ('docker login') {
+        steps {
+        withCredentials([usernamePassword(credentialsId: 'anuroopps-dockerhub', usernameVariable: 'DOCKER_USER_NAME', passwordVariable: 'DOCKER_PASSWORD') ])
+        {
+         sh 'echo logging in as $DOCKER_USER_NAME' 
+         sh 'echo $DOCKER_PASSWORD | docker login -u anuroopps --password-stdin'
+        }
+    }
+}
+   stage ('push image into repo') {
+       steps {
+           sh '''
+           echo 'list the docker images'
+           echo 'pushing the image into docker hub...'
+           docker push anuroopps/python-argocd-cicd:$BUILD_NUMBER
+           '''
+       }
+   }
+    stage ('check out k8s manifest files')
+    steps {
+        withCredentials([gitUsernamePassword(credentialsId: 'my-credentials-id', gitToolName: 'git-tool')]) {
+  sh 'git fetch --all'
+   }
+  }
+ }
+}
