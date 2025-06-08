@@ -72,5 +72,56 @@ stages{
             }
         }
     }
- }
+    stage('Cleanup old Docker tags') {
+  steps {
+    withCredentials([
+      usernamePassword(credentialsId: 'anuroopps-dockerhub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+      sh '''
+        REPO="anuroopps/python-argocd-cicd"
+
+        # Get JWT token from Docker Hub API
+        TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d "{\"username\": \"$DOCKERHUB_USERNAME\", \"password\": \"$DOCKERHUB_PASSWORD\"}" https://hub.docker.com/v2/users/login/ | jq -r .token)
+
+        if [ -z "$TOKEN" ] || [ "$TOKEN" == "null" ]; then
+          echo "Failed to get token"
+          exit 1
+        fi
+
+        echo "Successfully retrieved token"
+
+        AUTH_HEADER="Authorization: JWT $TOKEN"
+
+        # Get tags sorted by last_updated ascending (oldest first)
+        tags=$(curl -s -H "$AUTH_HEADER" "https://hub.docker.com/v2/repositories/$REPO/tags?page_size=100" | jq -r '.results | sort_by(.last_updated) | .[].name')
+
+        echo "All tags (oldest to newest):"
+        echo "$tags"
+
+        # Count how many tags exist
+        total_tags=$(echo "$tags" | wc -l)
+
+        # Calculate how many tags to delete (keep latest 3)
+        tags_to_delete_count=$((total_tags - 3))
+
+        if [ "$tags_to_delete_count" -le 0 ]; then
+          echo "Less than or equal to 3 tags exist, nothing to delete."
+          exit 0
+        fi
+
+        echo "Deleting $tags_to_delete_count old tags..."
+
+        # Get tags to delete: oldest tags only
+        tags_to_delete=$(echo "$tags" | head -n "$tags_to_delete_count")
+
+        for tag in $tags_to_delete; do
+          echo "Deleting tag: $tag"
+          curl -s -X DELETE -H "$AUTH_HEADER" "https://hub.docker.com/v2/repositories/$REPO/tags/$tag/"
+        done
+
+        echo "Cleanup complete."
+      '''
+    }
+  }
+}
+}
 }
