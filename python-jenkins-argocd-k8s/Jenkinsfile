@@ -58,7 +58,7 @@ stages{
                     git config user.email "anuroop@example.com"
                     git config user.name "Anuroop CI Bot"
 
-                    git add python-jenkins-argocd-k8s/deploy/deploy.yaml
+                    git add deploy.yaml
                     git commit -m "Update image tag to $BUILD_NUMBER"
                     git push https://$GITHUB_TOKEN@github.com/anuroopps/Jenkins-Zero-To-Hero HEAD:main
                     '''
