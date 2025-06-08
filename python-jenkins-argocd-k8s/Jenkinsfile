@@ -44,7 +44,7 @@ stages{
        steps {
            withCredentials([string(credentialsId: 'anuroopps-github', variable: 'GITHUB_TOEKN')]) {
                sh '''
-               git clone https://$GITHUB_TOKEN@https://github.com/anuroopps/Jenkins-Zero-To-Hero
+               git clone https://$GITHUB_TOKEN@github.com/anuroopps/Jenkins-Zero-To-Hero
                cd python-jenkins-argocd-k8s/deploy
                echo $pwd
                '''
