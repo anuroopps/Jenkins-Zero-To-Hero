@@ -44,7 +44,7 @@ stages{
   echo $pwd
   echo 'Before update: '
   cat deploy.yaml
-  sed -i "s|image: abhishekf5/todo-app:.*|image: abhishekf5/todo-app:$BUILD_NUMBER" deploy.yaml
+  sed -i "s|image: abhishekf5/todo-app:.*|image: abhishekf5/todo-app:$BUILD_NUMBER|" deploy.yaml
   echo 'After update: '
   cat deploy.yaml
   '''   
