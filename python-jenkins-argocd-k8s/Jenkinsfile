@@ -54,6 +54,7 @@ stages{
   }
     stage('Push Changes to GitHub') {
             steps {
+                dir('Jenkins-Zero-To-Hero') {
                 withCredentials([string(credentialsId: 'anuroopps-github', variable: 'GITHUB_TOKEN')]) {
                     sh '''
                     pwd 
@@ -69,5 +70,6 @@ stages{
                 }
             }
         }
+    }
  }
 }
