@@ -43,16 +43,13 @@ stages{
    stage ('check out k8s manifest files') {
        steps {
            withCredentials([string(credentialsId: 'anuroopps-github', variable: 'GITHUB_TOEKN')]) {
-               sh '''
-               git clone https://$GITHUB_TOKEN@github.com/anuroopps/Jenkins-Zero-To-Hero
-               cd python-jenkins-argocd-k8s/deploy
-               echo $pwd
-               '''
+               sh 'git clone https://$GITHUB_TOKEN@github.com/anuroopps/Jenkins-Zero-To-Hero'
            }
        }
    }
     stage ('Update tag name in deployment yaml') {
     steps {
+  dir('Jenkins-Zero-To-Hero/python-jenkins-argocd-k8s/deploy') {
   echo 'Updating the tag with $BUILD_NUMBER'
   sh '''
   echo 'Before update: '
@@ -60,8 +57,9 @@ stages{
   sed -i "s|image: abhishekf5/todo-app:.*|image: abhishekf5/todo-app:$BUILD_NUMBER" deploy.yaml
   echo 'After update: '
   cat deploy.yaml
-'''  
-     }
+'''   
+    }
    }
+  }
  }
 }
