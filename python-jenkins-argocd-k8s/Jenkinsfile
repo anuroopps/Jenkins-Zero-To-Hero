@@ -75,7 +75,7 @@ stages{
     stage('Cleanup old Docker tags') {
   steps {
     withCredentials([
-      usernamePassword(credentialsId: 'anuroopps-dockerhub', usernameVariable: 'DOCKER_USER_NAME', passwordVarible: 'DOCKER_PASSWORD')]) {
+      usernamePassword(credentialsId: 'anuroopps-dockerhub', usernameVariable: 'DOCKER_USER_NAME', passwordVariable: 'DOCKER_PASSWORD')]) {
       sh '''
         REPO="anuroopps/python-argocd-cicd"
 
