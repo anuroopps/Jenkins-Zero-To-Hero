@@ -65,6 +65,7 @@ stages{
 
                     git add deploy.yaml
                     git commit -m "Update image tag to $BUILD_NUMBER"
+                    git pull origin main --rebase
                     git push https://$GITHUB_TOKEN@github.com/anuroopps/Jenkins-Zero-To-Hero HEAD:main
                     '''
                 }
