@@ -42,7 +42,7 @@ stages{
   echo 'Updating the tag with $BUILD_NUMBER'
   sh '''
   cd python-jenkins-argocd-k8s/deploy
-  echo $pwd
+  echo pwd
   echo 'Before update: '
   cat deploy.yaml
   sed -i "s|image: abhishekf5/todo-app:.*|image: abhishekf5/todo-app:$BUILD_NUMBER|" deploy.yaml
@@ -56,6 +56,9 @@ stages{
             steps {
                 withCredentials([string(credentialsId: 'anuroopps-github', variable: 'GITHUB_TOKEN')]) {
                     sh '''
+                    pwd 
+                    cd python-jenkins-argocd-k8s/deploy
+                    pwd
                     git config user.email "anuroop@example.com"
                     git config user.name "Anuroop CI Bot"
 
