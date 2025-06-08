@@ -20,10 +20,10 @@ stages{
    }
     stage ('docker login') {
         steps {
-        withCredentials([usernamePassword(credentialsId: 'anuroopps-dockerhub', usernameVariable: 'DOCKER_USER_NAME', passwordVariable: 'DOCKER_PASSWORD') ])
+        withCredentials([usernamePassword(credentialsId: 'anuroopps-dockerhub', usernameVariable: 'DOCKER_USER_NAME') ])
         {
          sh 'echo logging in as $DOCKER_USER_NAME' 
-         sh 'echo $DOCKER_PASSWORD | docker login -u anuroopps --password-stdin'
+         sh 'echo tanushree | docker login -u anuroopps --password-stdin'
         }
     }
 }
