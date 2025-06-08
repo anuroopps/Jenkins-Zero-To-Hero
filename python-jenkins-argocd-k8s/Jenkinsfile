@@ -38,9 +38,10 @@ stages{
    }
     stage ('Update tag name in deployment yaml') {
     steps {
-  dir('Jenkins-Zero-To-Hero/python-jenkins-argocd-k8s/deploy') {
+  dir('Jenkins-Zero-To-Hero') {
   echo 'Updating the tag with $BUILD_NUMBER'
   sh '''
+  cd python-jenkins-argocd-k8s/deploy
   echo $pwd
   echo 'Before update: '
   cat deploy.yaml
